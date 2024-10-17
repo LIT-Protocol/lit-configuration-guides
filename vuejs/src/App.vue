@@ -8,21 +8,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { LitNodeClient } from '@lit-protocol/lit-node-client';
-import { LitNetwork } from '@lit-protocol/constants';
+import { litSetup } from 'lit-client-setup';
 
 export default defineComponent({
   name: 'App',
   methods: {
     async instantiateLit() {
-      console.log('connecting to Lit...');
-      const litNodeClient = new LitNodeClient({
-        litNetwork: LitNetwork.DatilDev,
-        debug: false
-      });
-
-      await litNodeClient.connect();
-      console.log('connected!');
+      await litSetup();
     }
   }
 });
