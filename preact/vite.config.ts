@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite'
-import inject from '@rollup/plugin-inject';
+// import inject from '@rollup/plugin-inject';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
@@ -19,9 +19,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       plugins: [
-        inject({
-          Buffer: ['buffer', 'Buffer']
-        })
+
       ]
     }
   }

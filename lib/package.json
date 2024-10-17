@@ -1,0 +1,12 @@
+{
+  "name": "lit-client-setup",
+  "version": "1.0.0",
+  "main": "lit-client-setup.ts",
+  "type": "module",
+  "files": [
+    "lit-client-setup.ts"
+  ],
+  "dependencies": {
+    "@lit-protocol/lit-node-client": "^7.0.0-alpha.6"
+  }
+}
