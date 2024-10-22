@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@lit-protocol/accs-schemas": "^0.0.15",
     "@craco/craco": "^7.1.0",
     "@simplewebauthn/browser": "^10.0.0",
     "buffer": "^6.0.3",

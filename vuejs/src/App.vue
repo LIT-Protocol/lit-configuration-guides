@@ -7,16 +7,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { litSetup } from 'lit-client-setup';
+import { defineComponent } from "vue";
+import { litSetup } from "lit-client-setup";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   methods: {
     async instantiateLit() {
       await litSetup();
-    }
-  }
+    },
+  },
 });
 </script>
 
