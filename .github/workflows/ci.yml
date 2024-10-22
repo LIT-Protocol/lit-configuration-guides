@@ -91,6 +91,11 @@ jobs:
           echo "updated_packages=$UPDATED_PACKAGES_STR" >> $GITHUB_ENV
           echo "updated_versions=$UPDATED_VERSIONS_STR" >> $GITHUB_ENV
 
+      # Get short SHA
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
+
       # Create a pull request after dependencies are updated
       - name: Create Pull Request
         if: env.matched_label != 'none'
@@ -98,7 +103,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update dependencies for ${{ env.matched_label }} label to versions: ${{ env.updated_versions }}"
-          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions }}-${{ github.sha | slice: 0, 7 }}"
+          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions }}-${{ steps.slug.outputs.sha7 }}"
           title: "[tag::${{ env.matched_label }}] Update dependencies to versions: ${{ env.updated_versions }}"
           body: |
             This pull request updates dependencies for the ${{ env.matched_label }} tag to the following versions:
