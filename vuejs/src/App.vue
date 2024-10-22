@@ -1,6 +1,7 @@
 <template>
   <div class="App">
     <h1>Lit with Vue</h1>
+    <p>LitNodeClientVersion: {{ LitNodeClientVersion }}</p>
     <p>Check console</p>
     <button @click="instantiateLit">Instantiate Lit</button>
   </div>
@@ -8,10 +9,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { litSetup } from "lit-client-setup";
+import { litSetup, LitNodeClientVersion } from "lit-client-setup";
 
 export default defineComponent({
   name: "App",
+  data() {
+    return {
+      LitNodeClientVersion: LitNodeClientVersion,
+    };
+  },
   methods: {
     async instantiateLit() {
       await litSetup();
