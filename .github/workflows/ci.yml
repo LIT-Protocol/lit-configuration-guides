@@ -70,6 +70,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update dependencies for ${{ env.matched_label }} label"
           branch: "update/dependencies-${{ env.matched_label }}"
-          title: "Update dependencies for ${{ env.matched_label }} label"
+          title: "[auto][${{ env.matched_label }}] Update dependencies"
           body: "This pull request updates dependencies for the ${{ env.matched_label }} tag."
           labels: ${{ env.matched_label }}
