@@ -45,13 +45,13 @@ jobs:
         run: |
           case "${{ steps.label-check.outputs.matched_label }}" in
             alpha)
-              yarn workspace lit upgrade package-name@alpha
+              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@alpha
               ;;
             beta)
-              yarn workspace lit upgrade package-name@beta
+              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@beta
               ;;
             latest)
-              yarn workspace lit upgrade package-name@latest
+              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@latest
               ;;
             *)
               echo "No matching label found for upgrade."
