@@ -1,12 +1,12 @@
 name: "Dependency Bot"
 on:
   repository_dispatch:
-    types: [dependency_update]
+    types:
+     - dependency_update
   push:
     branches:
-      - ci/auto-pub
       - main
-      - master
+      - "**"
 
 jobs:
   update-dependencies:
