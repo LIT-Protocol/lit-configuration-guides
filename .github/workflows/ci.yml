@@ -3,6 +3,10 @@ name: Trigger from HTTP request
 on:
   repository_dispatch:
     types: [custom-event]
+  push:
+    branches:
+      - main
+      - "**"
 
 jobs:
   run-workflow:
