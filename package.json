@@ -12,6 +12,9 @@
     "lib"
   ],
   "scripts": {
+    "update:alpha": "yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@alpha",
+    "update:beta": "yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@beta",
+    "update:latest": "yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@latest",
     "install:all": "yarn install --workspaces",
     "run:all": "lerna run dev",
     "run:lit": "lerna run dev --scope lit",
