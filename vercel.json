@@ -2,12 +2,12 @@
   "projects": {
     "reactjs": {
       "root": "reactjs",
-      "buildCommand": "lerna run build --scope reactjs",
+      "buildCommand": "yarn lerna run build --scope reactjs",
       "outputDirectory": "reactjs/build"
     },
     "vite-react": {
       "root": "vite-react",
-      "buildCommand": "lerna run build --scope vite-react",
+      "buildCommand": "yarn lerna run build --scope vite-react",
       "outputDirectory": "vite-react/dist"
     }
   }
