@@ -3,12 +3,12 @@
     "reactjs": {
       "root": "reactjs",
       "buildCommand": "lerna run build --scope reactjs",
-      "outputDirectory": "reactjs/out"
+      "outputDirectory": "reactjs/build"
     },
     "vite-react": {
       "root": "vite-react",
       "buildCommand": "lerna run build --scope vite-react",
-      "outputDirectory": "vite-react/out"
+      "outputDirectory": "vite-react/dist"
     }
   }
 }
