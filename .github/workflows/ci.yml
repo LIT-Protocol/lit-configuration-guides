@@ -78,9 +78,15 @@ jobs:
             fi
           done
 
+          # Remove ^ characters from versions
+          UPDATED_VERSIONS_CLEAN=()
+          for version in "${UPDATED_VERSIONS[@]}"; do
+            UPDATED_VERSIONS_CLEAN+=("${version#^}")
+          done
+
           # Join the updated packages and versions into a string for output
           UPDATED_PACKAGES_STR=$(IFS=, ; echo "${UPDATED_PACKAGES[*]}")
-          UPDATED_VERSIONS_STR=$(IFS=, ; echo "${UPDATED_VERSIONS[*]}")
+          UPDATED_VERSIONS_STR=$(IFS=, ; echo "${UPDATED_VERSIONS_CLEAN[*]}")
 
           echo "updated_packages=$UPDATED_PACKAGES_STR" >> $GITHUB_ENV
           echo "updated_versions=$UPDATED_VERSIONS_STR" >> $GITHUB_ENV
@@ -92,7 +98,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update dependencies for ${{ env.matched_label }} label to versions: ${{ env.updated_versions }}"
-          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions | sed 's/\^//g' }}"
+          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions }}"
           title: "[tag::${{ env.matched_label }}] Update dependencies to versions: ${{ env.updated_versions }}"
           body: |
             This pull request updates dependencies for the ${{ env.matched_label }} tag to the following versions:
