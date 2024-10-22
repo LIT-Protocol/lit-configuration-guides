@@ -58,7 +58,8 @@ jobs:
         if: env.matched_label != 'none'
         run: |
           # List of packages to update
-          PACKAGES=("@lit-protocol/lit-node-client" "another-package" "yet-another-package")
+          # PACKAGES=("@lit-protocol/lit-node-client" "another-package" "yet-another-package")
+          PACKAGES=("@lit-protocol/lit-node-client")
           UPDATED_PACKAGES=()
           UPDATED_VERSIONS=()
 
