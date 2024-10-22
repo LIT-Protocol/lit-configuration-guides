@@ -60,7 +60,7 @@ jobs:
           if [[ "${{ env.matched_label }}" != "none" ]]; then
             yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@${{ env.matched_label }}
             # Get the version of the updated package from the package.json
-            VERSION=$(jq -r '.dependencies["@lit-protocol/lit-node-client"]' < apps/lit-client-setup/package.json)
+            VERSION=$(jq -r '.dependencies["@lit-protocol/lit-node-client"]' < lib/package.json)
             echo "package_version=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "No matching label found for upgrade."
