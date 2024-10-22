@@ -11,21 +11,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Fetch the labels from the event payload
+      # Check for update label from client payload using GitHub's native `fromJSON`
       - name: Check for update label
         id: label-check
         run: |
           # List of supported labels
           SUPPORTED_LABELS=("alpha" "beta" "latest")
 
-          # Extract the labels from the event payload
-          LABELS=$(jq -r '.client_payload.labels[]' <<< '${{ github.event.client_payload }}')
+          # Convert JSON from client_payload to GitHub Actions format
+          LABELS=$(echo '${{ toJson(github.event.client_payload.labels) }}')
 
           # Default to "none" if no matching label is found
           MATCHED_LABEL="none"
 
-          # Check if one of the supported labels is present
-          for label in $LABELS; do
+          # Iterate over the supported labels and find a match
+          for label in "${LABELS[@]}"; do
             for supported_label in "${SUPPORTED_LABELS[@]}"; do
               if [[ "$label" == "$supported_label" ]]; then
                 MATCHED_LABEL=$label
@@ -36,14 +36,14 @@ jobs:
 
           echo "Matched Label: $MATCHED_LABEL"
 
-          # Output the matched label
-          echo "::set-output name=matched_label::$MATCHED_LABEL"
+          # Set output with the matched label
+          echo "matched_label=$MATCHED_LABEL" >> $GITHUB_ENV
 
       # Conditionally run the dependency update based on the label
       - name: Update dependencies if label matches
-        if: steps.label-check.outputs.matched_label != 'none'
+        if: env.matched_label != 'none'
         run: |
-          case "${{ steps.label-check.outputs.matched_label }}" in
+          case "${{ env.matched_label }}" in
             alpha)
               yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@alpha
               ;;
