@@ -1,82 +1,15 @@
-name: "Dependency Bot"
+name: Trigger from HTTP request
+
 on:
   repository_dispatch:
-    types:
-     - dependency_update
-  push:
-    branches:
-      - main
-      - "**"
+    types: [custom-event]
 
 jobs:
-  update-dependencies:
+  run-workflow:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install dependencies (for `jq`)
-        run: sudo apt-get install jq
-
-      # Fetch the labels from the event payload
-      - name: Check for update label
-        id: label-check
-        run: |
-          # List of supported labels
-          SUPPORTED_LABELS=("alpha" "beta" "latest")
-
-          # Extract the labels from the event payload
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            LABELS=$(jq -r '.pull_request.labels[].name' <<< '${{ toJson(github.event) }}')
-          else
-            LABELS=$(jq -r '.client_payload.labels[]' <<< '${{ toJson(github.event.client_payload) }}' 2>/dev/null || echo "")
-          fi
-
-          # Default to "none" if no matching label is found
-          MATCHED_LABEL="none"
-
-          # Check if one of the supported labels is present
-          for label in $LABELS; do
-            for supported_label in "${SUPPORTED_LABELS[@]}"; do
-              if [[ "$label" == "$supported_label" ]]; then
-                MATCHED_LABEL=$label
-                break 2
-              fi
-            done
-          done
-
-          echo "Matched Label: $MATCHED_LABEL"
-
-          # Output the matched label
-          echo "matched_label=$MATCHED_LABEL" >> $GITHUB_ENV
-
-      # Conditionally run the dependency update based on the label
-      - name: Update dependencies if label matches
-        if: env.matched_label != 'none'
-        run: |
-          case "${{ env.matched_label }}" in
-            alpha)
-              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@alpha
-              ;;
-            beta)
-              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@beta
-              ;;
-            latest)
-              yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@latest
-              ;;
-            *)
-              echo "No matching label found for upgrade."
-              ;;
-          esac
-
-      # Create a pull request after dependencies are updated
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update dependencies for ${{ env.matched_label }} label"
-          branch: "update/dependencies-${{ env.matched_label }}"
-          title: "Update dependencies for ${{ env.matched_label }} label"
-          body: "This pull request updates dependencies for the ${{ env.matched_label }} tag."
-          labels: ${{ env.matched_label }}
+      - name: Run your steps
+        run: echo "Workflow triggered by repository_dispatch"
