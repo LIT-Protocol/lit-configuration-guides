@@ -3,6 +3,10 @@ on:
   repository_dispatch:
     types:
       - dependency_update
+  push:
+    branches:
+      - main
+      - "**"
 
 jobs:
   update-dependencies:
