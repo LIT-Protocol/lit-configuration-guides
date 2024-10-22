@@ -92,7 +92,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update dependencies for ${{ env.matched_label }} label to versions: ${{ env.updated_versions }}"
-          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions }}"
+          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions | sed 's/\^//g' }}"
           title: "[tag::${{ env.matched_label }}] Update dependencies to versions: ${{ env.updated_versions }}"
           body: |
             This pull request updates dependencies for the ${{ env.matched_label }} tag to the following versions:
