@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install dependencies (for `jq`)
+        run: sudo apt-get install jq
+
       # Fetch the labels from the event payload
       - name: Check for update label
         id: label-check
@@ -46,13 +49,13 @@ jobs:
           echo "Matched Label: $MATCHED_LABEL"
 
           # Output the matched label
-          echo "matched_label=$MATCHED_LABEL" >> $GITHUB_OUTPUT
+          echo "matched_label=$MATCHED_LABEL" >> $GITHUB_ENV
 
       # Conditionally run the dependency update based on the label
       - name: Update dependencies if label matches
-        if: steps.label-check.outputs.matched_label != 'none'
+        if: env.matched_label != 'none'
         run: |
-          case "${{ steps.label-check.outputs.matched_label }}" in
+          case "${{ env.matched_label }}" in
             alpha)
               yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@alpha
               ;;
@@ -66,3 +69,14 @@ jobs:
               echo "No matching label found for upgrade."
               ;;
           esac
+
+      # Create a pull request after dependencies are updated
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dependencies for ${{ env.matched_label }} label"
+          branch: "update/dependencies-${{ env.matched_label }}"
+          title: "Update dependencies for ${{ env.matched_label }} label"
+          body: "This pull request updates dependencies for the ${{ env.matched_label }} tag."
+          labels: ${{ env.matched_label }}
