@@ -29,8 +29,10 @@ jobs:
           # Extract the labels from the event payload
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             LABELS=$(jq -r '.pull_request.labels[].name' <<< '${{ toJson(github.event) }}')
+          elif [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            LABELS=$(jq -r '.client_payload.labels[]' <<< '${{ toJson(github.event) }}')
           else
-            LABELS=$(jq -r '.client_payload.labels[]' <<< '${{ toJson(github.event.client_payload) }}' 2>/dev/null || echo "")
+            LABELS=""
           fi
 
           # Default to "none" if no matching label is found
