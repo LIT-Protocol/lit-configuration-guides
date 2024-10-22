@@ -3,10 +3,10 @@ on:
   repository_dispatch:
     types: [dependency_update]
   push:
-  branches:
-    - ci/auto-pub
-    - main
-    - master
+    branches:
+      - ci/auto-pub
+      - main
+      - master
 
 jobs:
   update-dependencies:
