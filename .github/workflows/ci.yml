@@ -57,14 +57,32 @@ jobs:
       - name: Update dependencies if label matches
         if: env.matched_label != 'none'
         run: |
-          if [[ "${{ env.matched_label }}" != "none" ]]; then
-            yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@${{ env.matched_label }}
-            # Get the version of the updated package from the package.json
-            VERSION=$(jq -r '.dependencies["@lit-protocol/lit-node-client"]' < lib/package.json)
-            echo "package_version=$VERSION" >> $GITHUB_OUTPUT
-          else
-            echo "No matching label found for upgrade."
-          fi
+          # List of packages to update
+          PACKAGES=("@lit-protocol/lit-node-client" "another-package" "yet-another-package")
+          UPDATED_PACKAGES=()
+          UPDATED_VERSIONS=()
+
+          for package in "${PACKAGES[@]}"; do
+            # Update the package
+            yarn workspace lit-client-setup upgrade "$package@${{ env.matched_label }}"
+            # Get the updated version from package.json
+            VERSION=$(jq -r ".dependencies[\"$package\"]" < lib/package.json)
+
+            if [[ "$VERSION" != "null" ]]; then
+              # Store the updated package and its version
+              UPDATED_PACKAGES+=("$package")
+              UPDATED_VERSIONS+=("$VERSION")
+            else
+              echo "No updated version found for $package"
+            fi
+          done
+
+          # Join the updated packages and versions into a string for output
+          UPDATED_PACKAGES_STR=$(IFS=, ; echo "${UPDATED_PACKAGES[*]}")
+          UPDATED_VERSIONS_STR=$(IFS=, ; echo "${UPDATED_VERSIONS[*]}")
+
+          echo "updated_packages=$UPDATED_PACKAGES_STR" >> $GITHUB_ENV
+          echo "updated_versions=$UPDATED_VERSIONS_STR" >> $GITHUB_ENV
 
       # Create a pull request after dependencies are updated
       - name: Create Pull Request
@@ -72,8 +90,10 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update dependencies for ${{ env.matched_label }} label to version ${{ steps.update-dependencies.outputs.package_version }}"
-          branch: "update/dependencies-${{ env.matched_label }}-${{ steps.update-dependencies.outputs.package_version }}"
-          title: "[tag::${{ env.matched_label }}] Update dependencies to version ${{ steps.update-dependencies.outputs.package_version }}"
-          body: "This pull request updates dependencies for the ${{ env.matched_label }} tag to version ${{ steps.update-dependencies.outputs.package_version }}."
+          commit-message: "chore: update dependencies for ${{ env.matched_label }} label to versions: ${{ env.updated_versions }}"
+          branch: "update/dependencies-${{ env.matched_label }}-${{ env.updated_versions }}"
+          title: "[tag::${{ env.matched_label }}] Update dependencies to versions: ${{ env.updated_versions }}"
+          body: |
+            This pull request updates dependencies for the ${{ env.matched_label }} tag to the following versions:
+            - ${{ env.updated_packages }}: ${{ env.updated_versions }}
           labels: ${{ env.matched_label }}
