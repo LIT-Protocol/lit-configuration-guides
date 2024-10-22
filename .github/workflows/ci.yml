@@ -1,0 +1,19 @@
+name: Trigger from HTTP request
+
+on:
+  repository_dispatch:
+    types: [custom-event]
+  push:
+    branches:
+      - main
+      - "**"
+
+jobs:
+  run-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run your steps
+        run: echo "Workflow triggered by repository_dispatch"
