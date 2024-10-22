@@ -59,6 +59,9 @@ jobs:
         run: |
           if [[ "${{ env.matched_label }}" != "none" ]]; then
             yarn workspace lit-client-setup upgrade @lit-protocol/lit-node-client@${{ env.matched_label }}
+            # Get the version of the updated package
+            VERSION=$(yarn workspace lit-client-setup list --pattern @lit-protocol/lit-node-client --json | jq -r '.[0].children[0].locator' | sed 's/.*@//')
+            echo "package_version=$VERSION" >> $GITHUB_ENV
           else
             echo "No matching label found for upgrade."
           fi
@@ -68,8 +71,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update dependencies for ${{ env.matched_label }} label"
-          branch: "update/dependencies-${{ env.matched_label }}"
-          title: "[auto][${{ env.matched_label }}] Update dependencies"
-          body: "This pull request updates dependencies for the ${{ env.matched_label }} tag."
+          commit-message: "chore: update dependencies for ${{ env.matched_label }} label to version ${{ env.package_version }}"
+          branch: "update/dependencies-${{ env.matched_label }}-${{ env.package_version }}"
+          title: "[auto][${{ env.matched_label }}] Update dependencies to version ${{ env.package_version }}"
+          body: "This pull request updates dependencies for the ${{ env.matched_label }} tag to version ${{ env.package_version }}."
           labels: ${{ env.matched_label }}
