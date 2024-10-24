@@ -7,6 +7,6 @@
     "lit-client-setup.ts"
   ],
   "dependencies": {
-    "@lit-protocol/lit-node-client": "^7.0.0-alpha.7"
+    "@lit-protocol/lit-node-client": "^7.0.0-alpha.9"
   }
 }
